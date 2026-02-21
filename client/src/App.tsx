@@ -1,9 +1,16 @@
 import { LiveGraph } from "./components/LiveGraph";
-import { FlashAlert } from "./components/FlashAlert";
+import { ContextPanel } from "./components/ContextPanel";
 import { useWebSocket } from "./hooks/useWebSocket";
 
 function App() {
-  const { connected, metrics, anomaly, sendApplyFix, clearAnomaly } = useWebSocket();
+  const {
+    connected,
+    metrics,
+    sendApplyFix,
+    simulatorDemandHistory,
+    allocation,
+    sendSetAllocation,
+  } = useWebSocket();
 
   return (
     <div className="min-h-screen bg-hud-bg text-hud-green">
@@ -23,7 +30,16 @@ function App() {
 
       <main className="p-6">
         <section className="mb-6">
-          <LiveGraph metrics={metrics} />
+          <LiveGraph
+            metrics={metrics}
+            onApplyThrottle={sendApplyFix}
+            simulatorDemandHistory={simulatorDemandHistory}
+            allocation={allocation}
+            onAllocationChange={sendSetAllocation}
+          />
+        </section>
+        <section className="mb-6">
+          <ContextPanel />
         </section>
         <section className="rounded border border-hud-border bg-hud-panel/80 p-4">
           <div className="mb-2 text-xs text-hud-dim">PROCESSES (top by CPU)</div>
@@ -49,14 +65,6 @@ function App() {
           </div>
         </section>
       </main>
-
-      {anomaly && (
-        <FlashAlert
-          payload={anomaly}
-          onApplyFix={sendApplyFix}
-          onDismiss={clearAnomaly}
-        />
-      )}
     </div>
   );
 }
