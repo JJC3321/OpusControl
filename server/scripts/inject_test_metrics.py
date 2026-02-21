@@ -1,6 +1,6 @@
 """
 Inject test metrics into Redis stream `system:metrics` for testing the dashboard
-without the C++ agent. Includes one high-CPU and one high-memory entry so the
+without a metrics collector. Includes one high-CPU and one high-memory entry so the
 stub analyzer will trigger an anomaly (run backend and open dashboard first).
 """
 import json
